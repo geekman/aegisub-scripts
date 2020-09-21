@@ -32,17 +32,41 @@ function remove_styles(tag)
 	return styles
 end
 
+function replace_with_single(text, pattern) 
+	local plen = string.len(pattern)
+	local i = 1
+	while i <= string.len(text) do
+		local st, en = string.find(text, pattern, i, true)
+		if st == nil then break end
+		en = en + 1 -- shift end to be AFTER pattern
+
+		for j = st + plen, string.len(text) - plen + 1, plen do
+			if string.sub(text, j, j + plen - 1) == pattern then
+				en = j + plen
+			else
+				break
+			end
+		end
+
+		text = string.sub(text, 1, st + plen - 1) .. string.sub(text, en)
+		i = en
+	end
+
+	return text
+end
+
 function strip_style_tags(subs, sel)
     for _, i in ipairs(sel) do
         local line = subs[i]
-        line.text = line.text:gsub("\\N+", "\\N")
         line.text = line.text:gsub("{[^}]+}", remove_styles)
 
 		-- move start tags before NL
         line.text = line.text:gsub("({[^}]*\\[a-z]+1[^}]*})\\N", "\\N%1")
 
         line.text = line.text:gsub("^%s*(.-)%s*$", "%1") -- trim whitespaces
+        line.text = replace_with_single(line.text, "\\N")
         line.text = line.text:gsub("\\N+$", "") -- trim trailing newlines
+        line.text = line.text:gsub("^\\N+", "") -- trim leading newlines
         subs[i] = line
     end
     aegisub.set_undo_point(tr"strip font,color tags")
