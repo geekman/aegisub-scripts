@@ -24,7 +24,7 @@ function remove_sdh(subs, sel)
 		if line.class == "dialogue" then
 			for name, patt in pairs(sdh_patt) do
 				local t = line.text:gsub('\\N', ' ')	-- remove newlines
-				t = line.text:gsub('{\\%w}', '')		-- remove formatting
+				t = line.text:gsub('{\\%w%d?}', '')		-- remove formatting
 				local st, en = t:find(patt)
 				if not processed and st ~= nil then
 					aegisub.debug.out(5, "SDH elem %s: %s\n", name, line.text)
