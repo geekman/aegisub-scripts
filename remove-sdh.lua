@@ -11,8 +11,8 @@ script_version = "1"
 
 function remove_sdh(subs, sel)
 	local sdh_patt = {
-		desc="^%s*%[.+%]%s*$",
-		music="^%s*[♪]+%s*$",
+		desc="^%s*[%[%(].+[%]%)]%s*$",
+		music="^%s*[♪ ]+%s*$",
 	}
 
 	local i = 1
