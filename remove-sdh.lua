@@ -6,7 +6,7 @@
 script_name = "Remove SDH elements"
 script_description = "Removes SDH elements from subtitles"
 script_author = "darell tan"
-script_version = "1"
+script_version = "1.1"
 
 
 function remove_sdh(subs, sel)
