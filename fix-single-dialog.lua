@@ -1,4 +1,4 @@
---
+﻿--
 -- usually a dash is used to indicate multiple parties talking in one sub
 -- but oddly, sometimes a single dash is present, even if only a single person
 -- is talking. this script fixes that.
@@ -20,18 +20,19 @@ function fix_single_dialog(subs, sel)
 		aegisub.progress.set(i / #subs * 100)
 
 		if line.class == "dialogue" then
-			local st, en = line.text:find(pattern)
+			local t = line.text:gsub("‐", "-")	-- normalize unicode dashes
+			local st, en = t:find(pattern)
 			if st ~= nil and st == 1 then
-				--aegisub.debug.out(5, "dialog: %s\n", line.text)
+				--aegisub.debug.out(5, "dialog: %s\n", t)
 
 				-- try finding another
 				local multiparty = false
 				local nx_end = en
 				while nx_end ~= nil do
 					local nx
-					nx, nx_end = line.text:find(pattern, nx_end + 1)
+					nx, nx_end = t:find(pattern, nx_end + 1)
 					--if nx ~= nil then aegisub.debug.out(5, "	finding next: %d, %d\n", nx, nx_end) end
-					if nx ~= nil and preceding_newline(line.text, nx) then
+					if nx ~= nil and preceding_newline(t, nx) then
 						multiparty = true
 						break
 					end
@@ -39,7 +40,7 @@ function fix_single_dialog(subs, sel)
 
 				if not multiparty then
 					-- if there's no other, we remove this one
-					line.text = line.text:sub(en+1)
+					line.text = t:sub(en+1)
 					subs[i] = line
 				end
 			end
