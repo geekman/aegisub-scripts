@@ -16,9 +16,11 @@ end
 function fix_single_dialog(subs, sel)
 	local pattern = "%s*[-]%s*"
 
-	for i, line in ipairs(subs) do
+	local i = 1
+	while i <= #subs do
 		aegisub.progress.set(i / #subs * 100)
 
+		local line = subs[i]
 		if line.class == "dialogue" then
 			local t = line.text:gsub("‐", "-")	-- normalize unicode dashes
 			local st, en = t:find(pattern)
@@ -40,11 +42,19 @@ function fix_single_dialog(subs, sel)
 
 				if not multiparty then
 					-- if there's no other, we remove this one
-					line.text = t:sub(en+1)
-					subs[i] = line
+					t = t:sub(en+1)
+					if t == '' then
+						subs.delete(i)
+						i = i - 1
+					else
+						line.text = t
+						subs[i] = line
+					end
 				end
 			end
 		end
+
+		i = i + 1
 	end
 
 	aegisub.progress.set(100)
