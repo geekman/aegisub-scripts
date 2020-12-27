@@ -11,8 +11,8 @@ script_version = "1.1"
 
 function remove_sdh(subs, sel)
 	local sdh_patt = {
-		desc="^%s*[%[%(].+[%]%)]%s*$",
-		music="^%s*[♪ ]+%s*$",
+		desc="[%[%(].-[%]%)]",
+		music="♪",
 	}
 
 	local i = 1
@@ -22,11 +22,15 @@ function remove_sdh(subs, sel)
 		local processed = false
 		local line = subs[i]
 		if line.class == "dialogue" then
+			local t = line.text:gsub('\\N', ' ')	-- remove newlines
+			t = t:gsub('{\\%w%d?}', '')				-- remove formatting
+
 			for name, patt in pairs(sdh_patt) do
-				local t = line.text:gsub('\\N', ' ')	-- remove newlines
-				t = line.text:gsub('{\\%w%d?}', '')		-- remove formatting
-				local st, en = t:find(patt)
-				if not processed and st ~= nil then
+				local tt = t:gsub(patt, '')
+				tt = tt:gsub('^[%s-]+$', '')	-- remove whitespace & dashes
+				tt = tt:gsub('^%s+$', '')		-- remove if all whitespace
+
+				if not processed and tt == '' then
 					aegisub.debug.out(5, "SDH elem %s: %s\n", name, line.text)
 					subs.delete(i)
 					processed = true
