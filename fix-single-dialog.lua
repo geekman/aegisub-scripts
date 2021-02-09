@@ -75,10 +75,9 @@ function fix_single_dialog(subs, sel)
 			if st ~= nil and preceding_newline(t, st) == 1 then
 				aegisub.debug.out(5, "dialog[%d]: %s\n", i, t)
 
-				-- try finding another
-				local multiparty = false
-				local nx_end = en
-				while nx_end ~= nil do
+				local dialog_count = 0
+				local nx_end = st - 1
+				while nx_end ~= nil and dialog_count <= 1 do
 					local nx
 					nx, nx_end = t:find(pattern, nx_end + 1)
 					--if nx ~= nil then aegisub.debug.out(5, "	finding next: %d, %d\n", nx, nx_end) end
@@ -93,17 +92,20 @@ function fix_single_dialog(subs, sel)
 							aegisub.debug.out(5, "	newstr \"%s\"\n", t)
 							aegisub.debug.out(5, "	next cycle from %d\n", nx_end)
 						else
-							multiparty = true
-							break
+							dialog_count = dialog_count + 1
 						end
 					end
 				end
 
 				t = t:gsub("\\N$", "")	-- remove trailing newline
 
-				if not multiparty then
+				if dialog_count <= 1 then
 					-- if there's no other, we remove this one
-					t = t:sub(1, st-1) .. t:sub(en+1)
+					-- but search again, as it may have been removed or shifted
+					st, en = t:find(pattern)
+					if st ~= nil and preceding_newline(t, st) == 1 then
+						t = t:sub(1, st-1) .. t:sub(en+1)
+					end
 					if t == '' then
 						subs.delete(i)
 						i = i - 1

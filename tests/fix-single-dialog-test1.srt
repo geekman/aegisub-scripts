@@ -1,0 +1,21 @@
+﻿1
+00:00:00,000 --> 00:00:05,000
+- Thank you.
+- What for?
+- For not touching this
+
+2
+00:00:05,000 --> 00:00:07,000
+-
+Single dialog, and end dashes--
+
+3
+00:00:07,000 --> 00:00:09,000
+-
+Also single dialog here.
+
+4
+00:00:09,000 --> 00:00:11,000
+ABC
+- Shouldn't be affected.
+
