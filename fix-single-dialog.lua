@@ -43,12 +43,16 @@ function preceding_newline(t, pos)
 	return 0
 end
 
+-- Looks for an EOL following pos, if any.
+-- If there is any whitespace at pos, it will be skipped. If no EOL immediately
+-- follows, then nil is returned. Otherwise, the position of the newline is
+-- returned.
 function next_eol(t, pos)
 	if pos > #t then return pos end
 
 	-- advance beyond whitespace, if any
 	local ws, ws_end = t:find('%s+', pos) 
-	if ws ~= nil then pos = ws_end end
+	if ws ~= nil and ws == pos then pos = ws_end end
 
 	if t:sub(pos, pos+1) == "\\N" then
 		return pos + 2
