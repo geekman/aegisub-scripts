@@ -19,3 +19,8 @@ Also single dialog here.
 ABC
 - Shouldn't be affected.
 
+5
+00:00:11,000 --> 00:00:13,000
+trailing dialog
+-
+

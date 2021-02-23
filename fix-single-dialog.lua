@@ -72,7 +72,7 @@ function fix_single_dialog(subs, sel)
 		if line.class == "dialogue" then
 			local t = line.text:gsub("‐", "-")	-- normalize unicode dashes
 			local st, en = t:find(pattern)
-			if st ~= nil and preceding_newline(t, st) == 1 then
+			if st ~= nil and preceding_newline(t, st) > 0 then
 				aegisub.debug.out(5, "dialog[%d]: %s\n", i, t)
 
 				local dialog_count = 0
