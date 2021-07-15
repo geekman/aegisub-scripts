@@ -25,8 +25,9 @@ function remove_sdh(subs, sel)
 			local t = line.text:gsub('\\N', ' ')	-- remove newlines
 			t = t:gsub('{\\%w+%d?}', '')			-- remove formatting
 
+			local tt = t
 			for name, patt in pairs(sdh_patt) do
-				local tt = t:gsub(patt, '')
+				tt = tt:gsub(patt, '')
 				tt = tt:gsub('^[%s-]+$', '')	-- remove whitespace & dashes
 				tt = tt:gsub('^%s+$', '')		-- remove if all whitespace
 
