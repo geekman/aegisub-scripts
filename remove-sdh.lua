@@ -8,6 +8,7 @@ script_description = "Removes SDH elements from subtitles"
 script_author = "darell tan"
 script_version = "1.1"
 
+require 'gm-utils'
 
 function remove_sdh(subs, sel)
 	local sdh_patt = {
@@ -36,6 +37,28 @@ function remove_sdh(subs, sel)
 					subs.delete(i)
 					processed = true
 					i = i - 1
+				end
+			end
+
+			-- if line wasn't removed, we see if dialog SDH elements 
+			-- exist and need to be removed
+			if not processed then
+				local m_st  = 0
+				local m_end = 0
+				local t = line.text
+				repeat
+					m_st, m_end = t:find('-%s-' .. sdh_patt['desc'], m_end + 1)
+					if m_st ~= nil then
+						local eol = next_eol(t, m_end + 1)
+						if preceding_newline(t, m_st) > 0 and eol then
+							t = t:sub(1, m_st - 1) .. t:sub(eol, #t + 1)
+						end
+					end
+				until m_st == nil 
+
+				if t ~= line.text then
+					line.text = t
+					subs[i] = line
 				end
 			end
 		end
