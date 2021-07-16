@@ -6,11 +6,23 @@
 script_name = "Remove SDH elements"
 script_description = "Removes SDH elements from subtitles"
 script_author = "darell tan"
-script_version = "1.1"
+script_version = "1.2"
 
 require 'gm-utils'
 
 function remove_sdh(subs, sel)
+	btn, remove_sel = aegisub.dialog.display({
+		{x=0,y=0,class="label", label="Select types of SDH elements to remove:"},
+
+		{x=0,y=2,class="checkbox", value=true, name="desc", label="[sound description]"},
+		{x=0,y=3,class="checkbox", value=true, name="desc_dialog", label="- [sound description in dialog]"},
+		{x=0,y=4,class="checkbox", value=true, name="music", label="♪ (Music)"},
+		{x=0,y=5,class="checkbox", value=false, name="lyrics", label="♪ Lyrics ♪"},
+
+		{x=0,y=6,class="label"},
+	}, {"Remove"})
+	if btn == false then return end
+
 	local sdh_patt = {
 		desc="[%[%(].-[%]%)]",
 		music="♪",
@@ -19,6 +31,14 @@ function remove_sdh(subs, sel)
 
 	-- note that music should be last because it's most general/generic
 	local sdh_patt_order = { 'desc', 'lyrics', 'music' }
+
+	-- remove unselected elements from ordered list
+	for i = #sdh_patt_order, 1, -1 do
+		if not remove_sel[sdh_patt_order[i]] then
+			sdh_patt_order[i] = nil
+		end
+	end
+
 	local i = 1
     while i <= #subs do
 		aegisub.progress.set(i / #subs * 100)
@@ -47,7 +67,7 @@ function remove_sdh(subs, sel)
 
 			-- if line wasn't removed, we see if dialog SDH elements 
 			-- exist and need to be removed
-			if not processed then
+			if not processed and remove_sel["desc_dialog"] then
 				local m_st  = 0
 				local m_end = 0
 				local t = line.text
@@ -62,6 +82,7 @@ function remove_sdh(subs, sel)
 				until m_st == nil 
 
 				if t ~= line.text then
+					aegisub.debug.out(5, "SDH elem %s: %s\n", 'desc_dialog', line.text)
 					line.text = t
 					subs[i] = line
 				end
