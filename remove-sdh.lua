@@ -14,8 +14,11 @@ function remove_sdh(subs, sel)
 	local sdh_patt = {
 		desc="[%[%(].-[%]%)]",
 		music="♪",
+		lyrics="♪.+♪",
 	}
 
+	-- note that music should be last because it's most general/generic
+	local sdh_patt_order = { 'desc', 'lyrics', 'music' }
 	local i = 1
     while i <= #subs do
 		aegisub.progress.set(i / #subs * 100)
@@ -27,7 +30,9 @@ function remove_sdh(subs, sel)
 			t = t:gsub('{\\%w+%d?}', '')			-- remove formatting
 
 			local tt = t
-			for name, patt in pairs(sdh_patt) do
+			for _, name in pairs(sdh_patt_order) do
+				local patt = sdh_patt[name]
+
 				tt = tt:gsub(patt, '')
 				tt = tt:gsub('^[%s-]+$', '')	-- remove whitespace & dashes
 				tt = tt:gsub('^%s+$', '')		-- remove if all whitespace
