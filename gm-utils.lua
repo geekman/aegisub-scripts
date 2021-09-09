@@ -55,3 +55,8 @@ function next_eol(t, pos)
 	end
 end
 
+-- removes formatting like italics or bold
+function strip_formatting(t)
+	return t:gsub('{\\%w+%d?}', '')
+end
+

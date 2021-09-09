@@ -47,7 +47,7 @@ function remove_sdh(subs, sel)
 		local line = subs[i]
 		if line.class == "dialogue" then
 			local t = line.text:gsub('\\N', ' ')	-- remove newlines
-			t = t:gsub('{\\%w+%d?}', '')			-- remove formatting
+			t = strip_formatting(t)					-- remove formatting
 
 			local tt = t
 			for _, name in pairs(sdh_patt_order) do

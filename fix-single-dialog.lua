@@ -56,7 +56,7 @@ function fix_single_dialog(subs, sel)
 					if st ~= nil and preceding_newline(t, st) == 1 then
 						t = t:sub(1, st-1) .. t:sub(en+1)
 					end
-					if t == '' then
+					if strip_formatting(t) == '' then
 						subs.delete(i)
 						i = i - 1
 					else
