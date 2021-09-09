@@ -39,8 +39,8 @@ function fix_single_dialog(subs, sel)
 						local eol = next_eol(t, nx_end + 1)
 						aegisub.debug.out(5, "	eol at %s\n", eol)
 						if eol then
-							aegisub.debug.out(5, "	removing empty dialog: %d - %d\n", nx_end, eol)
-							t = t:sub(1, nx_end - 1) .. t:sub(eol, #t + 1)
+							aegisub.debug.out(5, "	removing empty dialog: %d - %d\n", nx, eol)
+							t = t:sub(1, nx - 1) .. t:sub(eol, #t + 1)
 							local rlen = eol - nx_end
 							nx_end = eol - 1 - rlen
 							aegisub.debug.out(5, "	newstr \"%s\"\n", t)
