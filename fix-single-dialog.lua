@@ -21,6 +21,10 @@ function fix_single_dialog(subs, sel)
 		local line = subs[i]
 		if line.class == "dialogue" then
 			local t = line.text:gsub("‐", "-")	-- normalize unicode dashes
+
+			-- move start styles after newline, which makes it more "logical"
+			t = t:gsub('({\\%a1})%s*\\N', '\\N%1')
+
 			local st, en = t:find(pattern)
 			if st ~= nil and preceding_newline(t, st) > 0 then
 				aegisub.debug.out(5, "dialog[%d]: %s\n", i, t)
