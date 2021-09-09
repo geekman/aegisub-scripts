@@ -59,7 +59,7 @@ function fix_single_dialog(subs, sel)
 					if strip_formatting(t) == '' then
 						subs.delete(i)
 						i = i - 1
-					else
+					elseif line.text ~= t then
 						line.text = t
 						subs[i] = line
 					end
