@@ -39,6 +39,9 @@ function remove_sdh(subs, sel)
 		end
 	end
 
+	-- problematic subtitles, may need manual intervention
+	local problemSubs = {}
+
 	local i = 1
     while i <= #subs do
 		aegisub.progress.set(i / #subs * 100)
@@ -75,8 +78,33 @@ function remove_sdh(subs, sel)
 					m_st, m_end = t:find('-%s-' .. sdh_patt['desc'], m_end + 1)
 					if m_st ~= nil then
 						local eol = next_eol(t, m_end + 1)
-						if preceding_newline(t, m_st) > 0 and eol then
-							t = t:sub(1, m_st - 1) .. t:sub(eol, #t + 1)
+						local prev_nl = preceding_newline(t, m_st)
+						if prev_nl > 0 and eol then
+							-- check if tags are balanced, and can be removed together
+							local start_pos = nil
+							local prevTag = skip_tag(t, m_st - 1, -1)
+							if prevTag < m_st then
+								prevTag = prevTag + 1
+								removed = t:sub(prevTag, eol)
+
+								-- if balanced, we set it to be removed from there
+								local ok = check_styles_neutral(removed)
+								if ok then start_pos = prevTag end
+
+								--aegisub.debug.out(5, "  checkTags %d,%d [%s]: %s\n", prevTag, eol, ok and "OK" or "nope", removed)
+							end
+
+							-- no previous tag, or removed portion was not neutral
+							if start_pos == nil then start_pos = m_st end
+
+							removed = t:sub(start_pos, eol)
+							if not check_styles_neutral(removed) then
+								problemSubs[#problemSubs + 1] = line
+								line.effect = 'SDH'
+							end
+							--aegisub.debug.out(5, "  remove %d,%d: %s\n", start_pos, eol, removed)
+
+							t = t:sub(1, start_pos - 1) .. t:sub(eol, #t + 1)
 						end
 					end
 				until m_st == nil 
@@ -90,6 +118,23 @@ function remove_sdh(subs, sel)
 		end
 
 		i = i + 1
+	end
+
+	-- mark out problematic subs
+	if #problemSubs > 0 then
+		aegisub.debug.out(1, "\n\n--- problematic subs ---\n")
+		for i = 1, #problemSubs do
+			local line = problemSubs[i]
+
+			local r = line.start_time / 1000
+			local hrs = math.floor(r / 3600)
+			r = r % 3600
+			local mins = math.floor(r / 60)
+			r = r % 60
+			local secs = r
+
+			aegisub.debug.out(1, "  [%02d:%02d:%04.2f] %s\n", hrs, mins, secs, line.text)
+		end
 	end
 
 	aegisub.progress.set(100)

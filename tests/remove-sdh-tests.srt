@@ -1,0 +1,38 @@
+﻿1
+00:00:00,000 --> 00:00:05,000
+<i>- styled dialog before.</i>
+<i>- [alarm ringing]</i>
+
+2
+00:00:05,000 --> 00:00:07,000
+- unstyled dialog before.
+<i>- [alarm ringing]</i>
+
+3
+00:00:07,000 --> 00:00:09,000
+<i>- [alarm ringing]</i>
+- not styled dialog.
+
+4
+00:00:09,000 --> 00:00:11,000
+<i>- [alarm ringing]</i>
+<i>- styled dialog after.</i>
+
+5
+00:00:11,000 --> 00:00:13,000
+<i>- [alarm]</i>
+<i>- [person] dialog, but with person specifier</i>
+
+6
+00:00:13,000 --> 00:00:15,000
+[normal SDH tag]
+
+7
+00:00:15,000 --> 00:00:17,000
+[person] speaking. shouldnt be removed
+
+8
+00:00:17,000 --> 00:00:19,000
+<i>- [unclosed <b>italics]
+- </b>yeap</i>
+
