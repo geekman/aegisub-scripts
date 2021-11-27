@@ -105,6 +105,7 @@ function remove_sdh(subs, sel)
 							--aegisub.debug.out(5, "  remove %d,%d: %s\n", start_pos, eol, removed)
 
 							t = t:sub(1, start_pos - 1) .. t:sub(eol, #t + 1)
+							m_end = start_pos - 1	-- adjust next start pos
 						end
 					end
 				until m_st == nil 

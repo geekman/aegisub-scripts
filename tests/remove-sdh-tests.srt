@@ -36,3 +36,15 @@
 <i>- [unclosed <b>italics]
 - </b>yeap</i>
 
+9
+00:00:19,000 --> 00:00:21,000
+- [desc 1]
+- [desc 2]
+- [person] hello!
+
+10
+00:00:21,000 --> 00:00:23,000
+- [person 1] hello
+- [desc 2]
+- [person 2] hello!
+
