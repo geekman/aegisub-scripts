@@ -51,7 +51,9 @@ function fix_single_dialog(subs, sel)
 					end
 				end
 
-				t = t:gsub("\\N$", "")	-- remove trailing newline
+				-- remove trailing & leading newlines
+				t = t:gsub("\\N$", "")
+				t = t:gsub("^\\N", "")
 
 				if dialog_count <= 1 then
 					-- if there's no other, we remove this one

@@ -40,3 +40,8 @@ trailing dialog
 00:00:20,000 --> 00:00:22,000
 - \N- this dialog should have no dashes, otherwise it's a bug
 
+10
+00:00:22,000 --> 00:00:24,000
+<i>
+- dialog with newline after style</i>
+
